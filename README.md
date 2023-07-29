@@ -41,7 +41,7 @@ You should see the "Quick Notes" extension icon added to your Chrome toolbar.
 
 1. **Open the extension:**
 
-Click on the "Quick Notes" extension icon in the Chrome toolbar. This will open the Quick Notes popup.
+- Click on the "Quick Notes" extension icon in the Chrome toolbar. This will open the Quick Notes popup.
 
 2. **Add a new note:**
 
