@@ -1,3 +1,8 @@
+
+![banner](https://github.com/shubhamashish33/quick-note/assets/78084828/64acf6fe-df26-45c3-a0a7-bbd11c24f6c3)
+
+
+
 # Quick Notes Chrome Extension
 
 The Quick Notes Chrome Extension allows you to add and remove quick notes right from your Chrome browser. You can use this extension to jot down short pieces of information, reminders, or anything else you want to keep handy.
@@ -46,7 +51,7 @@ You should see the "Quick Notes" extension icon added to your Chrome toolbar.
 2. **Add a new note:**
 
 - Type your note in the input field provided.
-- Click the "Save Note" button to add the note.
+- Click the "Add to Note" button to add the note.
 
 3. **Remove a note:**
 
@@ -70,7 +75,7 @@ To uninstall the Quick Notes Chrome Extension, follow these steps:
 
 ## Support and Feedback
 
-If you encounter any issues or have suggestions for improvement, please feel free to [open an issue](https://github.com/yourusername/quick-notes-chrome-extension/issues). We appreciate your feedback and are here to help!
+If you encounter any issues or have suggestions for improvement, please feel free to [open an issue](https://github.com/shubhamashish33/quick-note/issues). We appreciate your feedback and are here to help!
 
 ## License
 
