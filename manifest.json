@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Quick Note 📝",
+  "version": "1.0",
+  "description": "Quickly jot down your important things!!",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["activeTab", "webNavigation", "storage"],
+  "icons": {
+    "48": "icon.png"
+  },
+  "host_permissions": ["https://api.example.com/*"]
+}

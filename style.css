@@ -1,0 +1,57 @@
+body {
+    width: 300px;
+}
+
+.add {
+    background-color: #000;
+    color: #fff;
+    border-radius: 5px;
+    padding: 5px 10px;
+    border: none;
+}
+
+.add:focus {
+    background-color: red;
+}
+
+.clear {
+    background-color: transparent;
+    border: none;
+}
+
+input{
+    padding: 5px;
+    border: none;
+    font-size: 16px;
+}
+input:focus{
+    outline: none;
+    border-bottom: 1px solid #000;
+}
+
+.content{
+    margin-bottom: 10px;
+}
+
+.note {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid #000;
+    border-radius: 5px;
+}
+
+.note:hover{
+    border: 2px solid #000;
+}
+
+.show-content {
+    font-size: 16px;
+}
+
+.remove-icon {
+    color: red;
+    cursor: pointer;
+}
