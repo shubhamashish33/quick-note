@@ -11,7 +11,15 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    saveButton.addEventListener("click", function () {
+    saveButton.addEventListener("click", addnote);
+
+    noteInput.addEventListener("keydown", function (event) {
+      if (event.keyCode === 13) {
+        addnote();
+      }
+    });
+
+    function addnote() {
       const noteText = noteInput.value.trim();
       if (noteText !== "") {
         chrome.storage.local.get("notes", function (result) {
@@ -28,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         noteInput.value = "";
       }
-    });
+    }
 
     function displayNote(note) {
       const noteDiv = document.createElement("div");
