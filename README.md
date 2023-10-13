@@ -44,6 +44,7 @@ In the top-right corner of the Extensions page, enable "Developer mode" by toggl
 You should see the "Quick Notes" extension icon added to your Chrome toolbar.
 
 6. **Pin in to Toolbar**
+   
 Just pin in to your toolbar by going into chrome extension settings
 
 ## How to Use
