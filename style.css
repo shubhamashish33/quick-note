@@ -1,5 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap');
+
+* {
+    font-family: 'Inter', sans-serif;
+
+}
+
+
 body {
-    width: 300px;
+    width: 330px;
 }
 
 .add {
@@ -41,7 +49,7 @@ input:focus {
     justify-content: space-between;
     padding: 5px;
     margin: 5px;
-    border: 1px solid #000;
+    border: 2px solid #ddd;
     border-radius: 5px;
 }
 
