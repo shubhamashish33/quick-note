@@ -3,23 +3,29 @@ document.addEventListener("DOMContentLoaded", function () {
   const saveButton = document.getElementById("saveButton");
   const notesList = document.getElementById("notesList");
 
+  let countof = 0;
+
   if (chrome.storage) {
     chrome.storage.local.get("notes", function (result) {
       if (result.notes) {
         const notes = JSON.parse(result.notes);
+
+        countof = notes.length;
         notes.forEach((note) => displayNote(note));
+
+        chrome.action.setBadgeText({ text: String(countof) });
       }
     });
 
-    saveButton.addEventListener("click", addnote);
+    saveButton.addEventListener("click", addNote);
 
     noteInput.addEventListener("keydown", function (event) {
       if (event.keyCode === 13) {
-        addnote();
+        addNote();
       }
     });
 
-    function addnote() {
+    function addNote() {
       const noteText = noteInput.value.trim();
       if (noteText !== "") {
         chrome.storage.local.get("notes", function (result) {
@@ -31,6 +37,9 @@ document.addEventListener("DOMContentLoaded", function () {
             { notes: JSON.stringify(existingNotes) },
             function () {
               displayNote(newNote);
+
+              countof = existingNotes.length;
+              chrome.action.setBadgeText({ text: String(countof) });
             }
           );
         });
@@ -48,6 +57,9 @@ document.addEventListener("DOMContentLoaded", function () {
       removeIcon.addEventListener("click", function () {
         notesList.removeChild(noteDiv);
         removeNoteFromStorage(note.id);
+
+        countof--;
+        chrome.action.setBadgeText({ text: String(countof) });
       });
 
       noteDiv.appendChild(removeIcon);
