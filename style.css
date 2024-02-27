@@ -65,3 +65,8 @@ input:focus {
     color: red;
     cursor: pointer;
 }
+
+.active {
+    background-color: #000;
+    color: #ddd;
+}
