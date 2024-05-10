@@ -54,6 +54,15 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         noteInput.value = "";
       }
+      if(boldButton.classList.contains("active")){
+        boldButton.classList.toggle("active");
+      }
+      if(underlineButton.classList.contains("active")){
+        underlineButton.classList.toggle("active")
+      }
+      if(italicButton.classList.contains("active")){
+        italicButton.classList.toggle("active")
+      }
     }
 
     function displayNote(note) {
@@ -103,12 +112,21 @@ document.addEventListener("DOMContentLoaded", function () {
     function formatText(format) {
       switch (format) {
         case "bold":
+          if (boldButton.classList.contains("active")) {
+            noteInput.value = "";
+          }
           boldButton.classList.toggle("active");
           break;
         case "italic":
+          if (italicButton.classList.contains("active")) {
+            noteInput.value = "";
+          }
           italicButton.classList.toggle("active");
           break;
         case "underline":
+          if (underlineButton.classList.contains("active")) {
+            noteInput.value = "";
+          }
           underlineButton.classList.toggle("active");
           break;
         default:

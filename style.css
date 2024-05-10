@@ -16,6 +16,7 @@ body {
     border-radius: 5px;
     padding: 5px 10px;
     border: none;
+    margin: 10px 0px;
 }
 
 .add:focus {
@@ -69,4 +70,8 @@ input:focus {
 .active {
     background-color: #000;
     color: #ddd;
+}
+.stylebtns{
+    padding: 5px 10px;
+    border-radius: 5px;   
 }
