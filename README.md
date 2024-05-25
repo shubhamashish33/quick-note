@@ -56,14 +56,18 @@ Just pin in to your toolbar by going into chrome extension settings
 2. **Add a new note:**
 
 - Type your note in the input field provided.
-- Click the "Add to Note" button to add the note.
+- Click the "Save to Notes" button to add the note.
 
-3. **Remove a note:**
+3. **You can add styling to your note**
+- Click on [B], [I], [U] to add styling to your note.
+- Make it more distinguishable.
+
+4. **Remove a note:**
 
 - Each note in the list has a red cross (✕) icon next to it.
 - Click on the cross icon to remove the respective note.
 
-4. **View saved notes:**
+5. **View saved notes:**
 
 - All your saved notes will be displayed below the input field.
 - Scroll through the list to view all notes.
