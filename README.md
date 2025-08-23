@@ -93,4 +93,4 @@ This extension is open-source and licensed under the [MIT License](LICENSE).
 
 ---
 
-We hope you find this Quick Notes Chrome Extension useful for keeping track of your quick thoughts and reminders. If you have any questions or need further assistance, please don't hesitate to reach out. Happy note-taking!
+We hope you find this Quick Notes Chrome Extension useful for keeping track of your quick thoughts and reminders. If you have any questions or need further assistance, please don't hesitate to reach out. Happy note-taking!.
