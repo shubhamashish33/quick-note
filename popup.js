@@ -70,7 +70,20 @@ document.addEventListener("DOMContentLoaded", function () {
         countof--;
         chrome.action.setBadgeText({ text: String(countof) });
       });
+
+      const copyButton = document.createElement("button");
+      copyButton.classList.add("copy-button");
+      copyButton.innerText = "Copy";
+      copyButton.addEventListener("click", function () {
+        navigator.clipboard.writeText(note.text).then(() => {
+          alert("Note copied to clipboard!");
+        }).catch(err => {
+          console.error("Failed to copy text: ", err);
+        });
+      });
+
       noteDiv.appendChild(removeIcon);
+      noteDiv.appendChild(copyButton);
       notesList.appendChild(noteDiv);
     }
     function removeNoteFromStorage(noteId) {

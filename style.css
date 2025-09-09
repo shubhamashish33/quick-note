@@ -3,7 +3,7 @@
     font-family: 'Inter', sans-serif;
 }
 body {
-    width: 330px;
+    width: auto;
 }
 .add {
     background-color: #000;
@@ -59,4 +59,10 @@ input:focus {
 .stylebtns{
     padding: 5px 10px;
     border-radius: 5px;   
+}
+.button-group {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
