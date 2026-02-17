@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const italicButton = document.getElementById("italicButton");
   const underlineButton = document.getElementById("underlineButton");
   const notesList = document.getElementById("notesList");
+  const successContainer = document.getElementById("success-message");
   let countof = 0;
   if (chrome.storage) {
     chrome.storage.local.get("notes", function (result) {
@@ -76,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
       copyButton.innerText = "Copy";
       copyButton.addEventListener("click", function () {
         navigator.clipboard.writeText(note.text).then(() => {
-          alert("Note copied to clipboard!");
+          successContainer.style.display = 'block';
         }).catch(err => {
           console.error("Failed to copy text: ", err);
         });

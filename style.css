@@ -66,3 +66,40 @@ input:focus {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+.success-message {
+    display: none;
+    position: fixed;
+    margin: 10px auto;
+    text-align: center;
+    background-color: rgb(35, 95, 35);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    animation: fadeOut 5s forwards;
+}
+.success-message::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    width: 100%;
+    background-color: rgba(255,255,255,0.8);
+    animation: countdown 5s linear forwards;
+}
+@keyframes countdown {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; }
+}
