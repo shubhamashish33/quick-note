@@ -62,7 +62,14 @@ document.addEventListener("DOMContentLoaded", function () {
     function displayNote(note) {
       const noteDiv = document.createElement("div");
       noteDiv.classList.add("note");
-      noteDiv.innerHTML = applyFormatting(note.text);
+
+      const noteTextSpan = document.createElement("span");
+      noteTextSpan.innerHTML = applyFormatting(note.text);
+      noteDiv.appendChild(noteTextSpan);
+
+      const buttonGroup = document.createElement("div");
+      buttonGroup.classList.add("note-btn-group");
+
       const removeIcon = document.createElement("i");
       removeIcon.classList.add("fas", "fa-times", "remove-icon");
       removeIcon.addEventListener("click", function () {
@@ -83,8 +90,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       });
 
-      noteDiv.appendChild(removeIcon);
-      noteDiv.appendChild(copyButton);
+      buttonGroup.appendChild(removeIcon);
+      buttonGroup.appendChild(copyButton);
+      noteDiv.appendChild(buttonGroup);
       notesList.appendChild(noteDiv);
     }
     function removeNoteFromStorage(noteId) {
