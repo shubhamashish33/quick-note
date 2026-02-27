@@ -6,11 +6,10 @@
   "action": {
     "default_popup": "popup.html"
   },
-  "permissions": ["activeTab", "webNavigation", "storage"],
+  "permissions": ["activeTab", "storage"],
   "icons": {
     "48": "icon.png"
   },
-  "host_permissions": ["https://api.example.com/*"],
   "commands": {
     "_execute_action": {
       "suggested_key": {
