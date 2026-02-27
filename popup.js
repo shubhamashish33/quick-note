@@ -6,17 +6,36 @@ document.addEventListener("DOMContentLoaded", function () {
   const underlineButton = document.getElementById("underlineButton");
   const notesList = document.getElementById("notesList");
   const successContainer = document.getElementById("success-message");
+  const capturePageButton = document.getElementById("capturePageButton");
   let countof = 0;
   if (chrome.storage) {
-    chrome.storage.local.get("notes", function (result) {
+    chrome.storage.sync.get("notes", function (result) {
       if (result.notes) {
         const notes = JSON.parse(result.notes);
         countof = notes.length;
         notes.forEach((note) => displayNote(note));
-        chrome.action.setBadgeText({ text: String(countof) });
+        chrome.action.setBadgeText({ text: countof > 0 ? "•" : "" });
+        chrome.action.setBadgeBackgroundColor({ color: "#ef4444" });
       }
     });
     saveButton.addEventListener("click", addNote);
+    
+    if (capturePageButton) {
+      capturePageButton.addEventListener("click", function() {
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+          if (tabs.length > 0) {
+            const tab = tabs[0];
+            const pageInfo = `${tab.url}`;
+            if (noteInput.value.trim() !== "") {
+              noteInput.value += "\n\n" + pageInfo;
+            } else {
+              noteInput.value = pageInfo;
+            }
+          }
+        });
+      });
+    }
+
     boldButton.addEventListener("click", function () {
       formatText("bold");
     });
@@ -27,23 +46,26 @@ document.addEventListener("DOMContentLoaded", function () {
       formatText("underline");
     });
     noteInput.addEventListener("keydown", function (event) {
-      if (event.keyCode === 13) {
+      // Allow Shift+Enter for new lines in textarea, Enter alone to save
+      if (event.keyCode === 13 && !event.shiftKey) {
+        event.preventDefault();
         addNote();
       }
     });
     function addNote() {
       const noteText = noteInput.value.trim();
       if (noteText !== "") {
-        chrome.storage.local.get("notes", function (result) {
+        chrome.storage.sync.get("notes", function (result) {
           const existingNotes = result.notes ? JSON.parse(result.notes) : [];
           const newNote = { text: noteText, id: Date.now() };
           existingNotes.push(newNote);
-          chrome.storage.local.set(
+          chrome.storage.sync.set(
             { notes: JSON.stringify(existingNotes) },
             function () {
               displayNote(newNote);
               countof = existingNotes.length;
-              chrome.action.setBadgeText({ text: String(countof) });
+              chrome.action.setBadgeText({ text: countof > 0 ? "•" : "" });
+              chrome.action.setBadgeBackgroundColor({ color: "#ef4444" });
             }
           );
         });
@@ -76,7 +98,8 @@ document.addEventListener("DOMContentLoaded", function () {
         notesList.removeChild(noteDiv);
         removeNoteFromStorage(note.id);
         countof--;
-        chrome.action.setBadgeText({ text: String(countof) });
+        chrome.action.setBadgeText({ text: countof > 0 ? "•" : "" });
+        chrome.action.setBadgeBackgroundColor({ color: "#ef4444" });
       });
 
       const copyButton = document.createElement("button");
@@ -96,10 +119,10 @@ document.addEventListener("DOMContentLoaded", function () {
       notesList.appendChild(noteDiv);
     }
     function removeNoteFromStorage(noteId) {
-      chrome.storage.local.get("notes", function (result) {
+      chrome.storage.sync.get("notes", function (result) {
         const existingNotes = result.notes ? JSON.parse(result.notes) : [];
         const updatedNotes = existingNotes.filter((note) => note.id !== noteId);
-        chrome.storage.local.set({ notes: JSON.stringify(updatedNotes) });
+        chrome.storage.sync.set({ notes: JSON.stringify(updatedNotes) });
       });
     }
     function applyFormatting(text) {

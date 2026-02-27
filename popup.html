@@ -1,27 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Your Extension</title>
+  <meta charset="UTF-8">
+  <title>Quick Note</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-  <p class="success-message" id="success-message">Notes Copied Successfully</p>
-  <h1>Quick Note</h1>
+  <div class="success-message" id="success-message">
+    <i class="fas fa-check-circle"></i> Notes Copied Successfully
+  </div>
+  
+  <header>
+    <h1><i class="fas fa-bolt" style="color: #6366f1;"></i> Quick Note</h1>
+  </header>
+
   <div class="content">
-    <input type="text" id="noteInput" placeholder="Add your notes!" />
-    <button class="add" id="saveButton">Save to Notes</button>
-    <div class="button-group">
-      <button id="boldButton" class="stylebtns">B</button>
-      <button id="italicButton" class="stylebtns">I</button>
-      <button id="underlineButton" class="stylebtns">U</button>
+    <div class="input-container">
+      <textarea id="noteInput" placeholder="What's on your mind?"></textarea>
+      <div class="toolbar">
+        <div class="button-group">
+          <button id="boldButton" class="stylebtns" title="Bold"><i class="fas fa-bold"></i></button>
+          <button id="italicButton" class="stylebtns" title="Italic"><i class="fas fa-italic"></i></button>
+          <button id="underlineButton" class="stylebtns" title="Underline"><i class="fas fa-underline"></i></button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="saveButton">
+        <i class="fas fa-save"></i> Save Note
+      </button>
+      <button class="btn btn-secondary" id="capturePageButton">
+        <i class="fas fa-paperclip"></i> Add Page
+      </button>
     </div>
   </div>
+  
   <div class="show-task">
+    <div class="section-title">Recent Notes</div>
     <div class="show-content" id="notesList"></div>
   </div>
+  
   <script src="./popup.js"></script>
 </body>
 </html>
