@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Note - The Minimalist Chrome Notepad</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --secondary: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --bg: #ffffff;
+      --accent: #e0e7ff;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--secondary);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Navigation */
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .logo i {
+      color: var(--primary);
+    }
+
+    /* Hero Section */
+    .hero {
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .hero-label {
+      display: inline-block;
+      padding: 6px 16px;
+      background-color: var(--accent);
+      color: var(--primary);
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: 64px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: -1px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px auto;
+    }
+
+    .cta-container {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 60px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 15px 25px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-secondary {
+      background-color: white;
+      color: var(--text-main);
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-secondary:hover {
+      background-color: #f1f5f9;
+      transform: translateY(-2px);
+    }
+
+    /* App Preview Mockup Container */
+    .preview-container {
+      max-width: 800px;
+      margin: 0 auto 100px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      /* Just a stylistic representation of the extension */
+      text-align: left;
+      position: relative;
+    }
+
+    .preview-header {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #e2e8f0;
+    }
+
+    .dot:nth-child(1) { background-color: #ef4444; }
+    .dot:nth-child(2) { background-color: #f59e0b; }
+    .dot:nth-child(3) { background-color: #10b981; }
+
+    /* Features Grid */
+    .features-section {
+      background-color: var(--bg);
+      padding: 80px 24px;
+    }
+
+    .features-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .features-header h2 {
+      font-size: 40px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .features-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+    }
+
+    .feature-card {
+      background-color: var(--secondary);
+      padding: 40px 30px;
+      border-radius: 20px;
+      transition: transform 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      background-color: var(--accent);
+      color: var(--primary);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+
+    .feature-card h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--text-main);
+      color: white;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    footer p {
+      color: #94a3b8;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 48px; }
+      .cta-container { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="#" class="logo"><i class="fas fa-bolt"></i> Quick Note</a>
+    <!-- Optional: Add navigation links like Help, Contact, etc here later -->
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-label">v2.0 is Here!</div>
+    <h1>Capture ideas instantly <br>without leaving your <span>workflow</span>.</h1>
+    <p>A beautifully minimalist Chrome notepad that stays out of your way and seamlessly syncs across all your devices.</p>
+    
+    <div class="cta-container">
+      <!-- REPLACE "#" with the Chrome Web Store Link once approved -->
+      <a href="#" class="btn btn-primary" id="chromeStoreBtn">
+        <i class="fab fa-chrome"></i> Add to Chrome (Coming Soon)
+      </a>
+      <a href="https://github.com/shubhamashish33/quick-note" target="_blank" class="btn btn-secondary">
+        <i class="fab fa-github"></i> View Source
+      </a>
+    </div>
+  </section>
+
+  <!-- Features Overlay -->
+  <section class="features-section">
+    <div class="features-header">
+      <h2>Everything you need. <br>Nothing you don't.</h2>
+      <p style="color: var(--text-muted); font-size: 18px;">Built to be lightning fast and exceptionally lightweight.</p>
+    </div>
+    
+    <div class="features-grid">
+      <!-- Feature 1 -->
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-cloud"></i></div>
+        <h3>Cloud Syncing</h3>
+        <p>Seamlessly backs up and syncs your notes across all Chrome profiles and devices signed into your Google account.</p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-paperclip"></i></div>
+        <h3>Add Current Page</h3>
+        <p>Doing research? Instantly extract the URL of your active tab and copy it directly into your notes with one click.</p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-keyboard"></i></div>
+        <h3>Global Shortcuts</h3>
+        <p>Use keyboard shortcuts (Alt+N) to instantly open your notepad from anywhere, without having to reach for the mouse.</p>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-font"></i></div>
+        <h3>Rich Formatting</h3>
+        <p>A clutter-free rich-text editor allowing you to bold, italicize, and underline your notes on the fly beautifully.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 Quick Note. Open Source & Built with <i class="fas fa-heart" style="color: #ef4444;"></i>.</p>
+  </footer>
+
+  <script>
+    // Optional Script: You can set up a nice alert on the Chrome Store button until the link is ready.
+    document.getElementById('chromeStoreBtn').addEventListener('click', function(e) {
+      if(this.getAttribute('href') === '#') {
+        e.preventDefault();
+        alert("Quick Note is currently under review by the Chrome Web Store. Please check back soon or download it directly from GitHub!");
+      }
+    });
+  </script>
+</body>
+</html>
