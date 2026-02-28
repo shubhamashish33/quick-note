@@ -1,16 +1,18 @@
-
 ![banner](https://github.com/shubhamashish33/quick-note/assets/78084828/64acf6fe-df26-45c3-a0a7-bbd11c24f6c3)
-
-
 
 # Quick Note Chrome Extension
 
-The Quick Notes Chrome Extension allows you to add and remove quick notes right from your Chrome browser. You can use this extension to jot down short pieces of information, reminders, or anything else you want to keep handy.
+The Quick Notes Chrome Extension allows you to add and remove quick notes right from your Chrome browser. You can use this extension to jot down short pieces of information, reminders, save important links, or anything else you want to keep handy.
 
 ![image](https://github.com/shubhamashish33/quick-note/assets/78084828/ea999b3d-bd3f-4484-9cff-5079fc6389b4)
 
+## ✨ What's New in Version 2.0
 
-
+* **Cloud Syncing:** Notes are now saved using Chrome's `storage.sync` API. Your notes will automatically sync across all your devices logged into the same Chrome profile!
+* **Capture Current Page:** Click the new "Add Page" button to instantly paste your current tab's URL into your notes. Perfect for research!
+* **Global Keyboard Shortcut:** Press `Alt + N` (or `Option + N` on Mac) from anywhere in your browser to instantly pop open your Quick Notes.
+* **Modern UI:** A completely redesigned, premium interface featuring smooth modern styling, glass-like UI, soft shadows, and proper multi-line input support. 
+* **Quality of Life:** The badge counter has been simplified to a clean dot indicator, and you can now quickly press `Enter` to save, or `Shift + Enter` for a new line.
 
 ## Installation
 
@@ -20,7 +22,7 @@ Follow these steps to install the Quick Notes Chrome Extension:
 
    Clone this repository to your local machine using the following command:
 
-``` bash
+```bash
 git clone https://github.com/shubhamashish33/quick-note.git
 ```
 
@@ -44,34 +46,26 @@ In the top-right corner of the Extensions page, enable "Developer mode" by toggl
 
 You should see the "Quick Notes" extension icon added to your Chrome toolbar.
 
-6. **Pin in to Toolbar**
+6. **Pin in to Toolbar:**
    
-Just pin in to your toolbar by going into chrome extension settings
+Just pin it to your toolbar by going into chrome extension settings.
 
 ## How to Use
 
 1. **Open the extension:**
-
-- Click on the "Quick Notes" extension icon in the Chrome toolbar. This will open the Quick Notes popup.
+- Click on the "Quick Notes" extension icon in the Chrome toolbar. Or manually use the `Alt + N` global shortcut.
 
 2. **Add a new note:**
+- Type your note in the input field provided. 
+- Press `Enter` or click the "Save Note" button to add it. To make a new line, press `Shift + Enter`.
+- *Pro Tip:* Click "Add Page" to automatically extract the URL from your active tab!
 
-- Type your note in the input field provided.
-- Click the "Save to Notes" button to add the note.
+3. **Style your note:**
+- Click on [B], [I], [U] inside the toolbar to add formatting to your text before saving.
 
-3. **You can add styling to your note**
-- Click on [B], [I], [U] to add styling to your note.
-- Make it more distinguishable.
-
-4. **Remove a note:**
-
-- Each note in the list has a red cross (✕) icon next to it.
-- Click on the cross icon to remove the respective note.
-
-5. **View saved notes:**
-
-- All your saved notes will be displayed below the input field.
-- Scroll through the list to view all notes.
+4. **Manage notes:**
+- **Copy:** Easily copy a note to your clipboard by hitting the "Copy" button.
+- **Delete:** Click the red cross (✕) or trash icon next to any note to remove it.
 
 ## Uninstalling the Extension
 
@@ -93,4 +87,4 @@ This extension is open-source and licensed under the [MIT License](LICENSE).
 
 ---
 
-We hope you find this Quick Notes Chrome Extension useful for keeping track of your quick thoughts and reminders. If you have any questions or need further assistance, please don't hesitate to reach out. Happy note-taking!.
+We hope you find this Quick Notes Chrome Extension useful for keeping track of your quick thoughts, research links, and reminders. Happy note-taking!
