@@ -15,18 +15,15 @@
   
   <header>
     <h1><i class="fas fa-bolt" style="color: #6366f1;"></i> Quick Note</h1>
+    <div class="header-actions">
+      <button id="darkModeToggle" class="icon-btn" title="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+      <button id="zenModeButton" class="icon-btn" title="Zen Mode"><i class="fas fa-expand"></i></button>
+    </div>
   </header>
 
   <div class="content">
     <div class="input-container">
-      <textarea id="noteInput" placeholder="What's on your mind?"></textarea>
-      <div class="toolbar">
-        <div class="button-group">
-          <button id="boldButton" class="stylebtns" title="Bold"><i class="fas fa-bold"></i></button>
-          <button id="italicButton" class="stylebtns" title="Italic"><i class="fas fa-italic"></i></button>
-          <button id="underlineButton" class="stylebtns" title="Underline"><i class="fas fa-underline"></i></button>
-        </div>
-      </div>
+      <textarea id="noteInput" placeholder="What's on your mind? (Markdown supported)"></textarea>
     </div>
     
     <div class="action-buttons">
@@ -40,7 +37,17 @@
   </div>
   
   <div class="show-task">
-    <div class="section-title">Recent Notes</div>
+    <div class="section-header">
+      <div class="section-title">Recent Notes</div>
+      <div class="list-actions">
+        <button id="copyAllButton" class="icon-btn" title="Copy All"><i class="fas fa-copy"></i></button>
+        <button id="exportButton" class="icon-btn" title="Export to .txt"><i class="fas fa-download"></i></button>
+      </div>
+    </div>
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" id="searchInput" placeholder="Search notes...">
+    </div>
     <div class="show-content" id="notesList"></div>
   </div>
   
