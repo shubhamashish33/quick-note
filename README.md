@@ -6,7 +6,8 @@
 
 The Quick Notes Chrome Extension allows you to add and remove quick notes right from your Chrome browser. You can use this extension to jot down short pieces of information, reminders, save important links, or anything else you want to keep handy.
 
-<img width="1280" height="800" alt="screenshot_2" src="https://github.com/user-attachments/assets/43147c63-669d-4ee7-bcb0-03d83f4a612c" />
+<img width="1536" height="973" alt="ChatGPT Image Apr 22, 2026, 10_27_10 PM" src="https://github.com/user-attachments/assets/b8c42789-9bf2-487b-8ace-b21ca4570b66" />
+
 
 
 ## ✨ What's New in Version 2.0
