@@ -70,6 +70,10 @@ body.zen-mode .show-task {
   margin-top: 40px;
 }
 
+body.zen-mode #capturePageButton {
+  display: none;
+}
+
 header {
   display: flex;
   align-items: center;
@@ -280,6 +284,8 @@ textarea::placeholder {
   line-height: 1.6;
   color: var(--text-main);
   white-space: pre-wrap; /* Preserves newlines from textarea */
+  max-height: 70px;
+  overflow: hidden;
 }
 
 .note-content a {
@@ -405,4 +411,124 @@ textarea::placeholder {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Edit Modal */
+.edit-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+}
+
+.edit-modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.edit-modal-content {
+  position: relative;
+  background-color: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+}
+
+.edit-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-modal-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  border-radius: 6px;
+}
+
+.close-btn:hover {
+  background-color: var(--secondary-hover);
+  color: var(--text-main);
+}
+
+#editNoteInput {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-main);
+  background: var(--bg);
+  min-height: 300px;
+  resize: vertical;
+  font-family: 'Outfit', sans-serif;
+  outline: none;
+}
+
+#editNoteInput:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.edit-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.edit-modal-actions .btn {
+  flex: 0 1 auto;
+  min-width: 100px;
+}
+
+.note-edit-textarea {
+  width: 100%;
+  border: 1px solid var(--primary);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-main);
+  background: var(--bg-alt);
+  min-height: 200px;
+  resize: vertical;
+  font-family: 'Outfit', sans-serif;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }

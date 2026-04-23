@@ -4,15 +4,23 @@ document.addEventListener("DOMContentLoaded", function () {
   const notesList = document.getElementById("notesList");
   const successContainer = document.getElementById("success-message");
   const capturePageButton = document.getElementById("capturePageButton");
-  
+
   const darkModeToggle = document.getElementById("darkModeToggle");
   const zenModeButton = document.getElementById("zenModeButton");
   const searchInput = document.getElementById("searchInput");
   const exportButton = document.getElementById("exportButton");
   const copyAllButton = document.getElementById("copyAllButton");
 
+  const editModal = document.getElementById("editModal");
+  const editNoteInput = document.getElementById("editNoteInput");
+  const closeEditModal = document.getElementById("closeEditModal");
+  const cancelEditButton = document.getElementById("cancelEditButton");
+  const saveEditButton = document.getElementById("saveEditButton");
+  const editOverlay = document.getElementById("editOverlay");
+
   let countof = 0;
   let allNotes = []; // To keep track for search filtering
+  let currentEditNoteId = null;
 
   // Check Zen Mode
   const urlParams = new URLSearchParams(window.location.search);
@@ -131,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const noteTextDiv = document.createElement("div");
       noteTextDiv.classList.add("note-content");
       noteTextDiv.innerHTML = parseMarkdown(note.text, note.id);
-      
+
       // Add event listeners to checkboxes
       setTimeout(() => {
         const checkboxes = noteDiv.querySelectorAll('.checklist-checkbox');
@@ -165,6 +173,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
       buttonGroup.appendChild(removeIcon);
       buttonGroup.appendChild(copyButton);
+
+      // Add View Full button only in regular mode (not zen)
+      if (!isZenMode) {
+        const viewFullButton = document.createElement("button");
+        viewFullButton.classList.add("copy-button");
+        viewFullButton.innerHTML = '<i class="fas fa-expand"></i> View Full';
+        viewFullButton.addEventListener("click", function () {
+          const extensionUrl = chrome.runtime.getURL(`popup.html?zen=true&note=${note.id}`);
+          chrome.tabs.create({ url: extensionUrl });
+        });
+        buttonGroup.appendChild(viewFullButton);
+      }
+
+      // Add edit button only in zen mode
+      if (isZenMode) {
+        const editButton = document.createElement("button");
+        editButton.classList.add("copy-button");
+        editButton.innerHTML = 'View/Edit';
+        editButton.style.marginRight = "auto";
+        editButton.addEventListener("click", function () {
+          openEditModal(note.id, note.text);
+        });
+        buttonGroup.insertBefore(editButton, buttonGroup.firstChild);
+      }
+
       noteDiv.appendChild(buttonGroup);
       notesList.appendChild(noteDiv);
     }
@@ -271,12 +304,55 @@ document.addEventListener("DOMContentLoaded", function () {
       return text;
     }
 
-    function showSuccess() {
+    function showSuccess(message = "Notes Copied Successfully") {
+      document.getElementById("success-text").innerText = message;
       successContainer.style.display = 'block';
       setTimeout(() => {
         successContainer.style.display = 'none';
       }, 2000);
     }
+
+    function openEditModal(noteId, noteText) {
+      currentEditNoteId = noteId;
+      editNoteInput.value = noteText;
+      editModal.classList.add('active');
+      editNoteInput.focus();
+    }
+
+    function closeEditModalHandler() {
+      editModal.classList.remove('active');
+      currentEditNoteId = null;
+      editNoteInput.value = '';
+    }
+
+    function saveEditedNote() {
+      if (!currentEditNoteId) return;
+      const editedText = editNoteInput.value.trim();
+      if (editedText === "") return;
+
+      const noteIndex = allNotes.findIndex(n => n.id === currentEditNoteId);
+      if (noteIndex > -1) {
+        allNotes[noteIndex].text = editedText;
+        chrome.storage.sync.set({ notes: JSON.stringify(allNotes) }, () => {
+          renderNotes(allNotes);
+          closeEditModalHandler();
+          showSuccess("Notes Updated Successfully");
+        });
+      }
+    }
+
+    // Modal event listeners
+    closeEditModal.addEventListener("click", closeEditModalHandler);
+    cancelEditButton.addEventListener("click", closeEditModalHandler);
+    editOverlay.addEventListener("click", closeEditModalHandler);
+    saveEditButton.addEventListener("click", saveEditedNote);
+
+    // Close modal on Escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && editModal.classList.contains('active')) {
+        closeEditModalHandler();
+      }
+    });
 
     // Export Notes
     exportButton.addEventListener('click', () => {

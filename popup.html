@@ -10,7 +10,7 @@
 </head>
 <body>
   <div class="success-message" id="success-message">
-    <i class="fas fa-check-circle"></i> Notes Copied Successfully
+    <i class="fas fa-check-circle"></i> <span id="success-text">Notes Copied Successfully</span>
   </div>
   
   <header>
@@ -50,7 +50,22 @@
     </div>
     <div class="show-content" id="notesList"></div>
   </div>
-  
+
+  <div class="edit-modal" id="editModal">
+    <div class="edit-overlay" id="editOverlay"></div>
+    <div class="edit-modal-content">
+      <div class="edit-modal-header">
+        <h2>Edit Note</h2>
+        <button class="close-btn" id="closeEditModal"><i class="fas fa-times"></i></button>
+      </div>
+      <textarea id="editNoteInput" placeholder="Edit your note..."></textarea>
+      <div class="edit-modal-actions">
+        <button class="btn btn-secondary" id="cancelEditButton">Cancel</button>
+        <button class="btn btn-primary" id="saveEditButton">Save</button>
+      </div>
+    </div>
+  </div>
+
   <script src="./popup.js"></script>
 </body>
 </html>
