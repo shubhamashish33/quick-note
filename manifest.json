@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Quick Note 📝",
-  "version": "1.0",
+  "version": "2.0",
   "description": "Quickly jot down your important things!!",
   "action": {
     "default_popup": "popup.html"

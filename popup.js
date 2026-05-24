@@ -21,16 +21,18 @@ document.addEventListener("DOMContentLoaded", function () {
   let countof = 0;
   let allNotes = []; // To keep track for search filtering
   let currentEditNoteId = null;
+  let didOpenSelectedNote = false;
 
   // Check Zen Mode
   const urlParams = new URLSearchParams(window.location.search);
   const isZenMode = urlParams.get('zen') === 'true';
+  const selectedNoteId = urlParams.has('note') ? Number(urlParams.get('note')) : null;
   if (isZenMode) {
     document.body.classList.add('zen-mode');
     document.querySelector('header h1').innerHTML = '<i class="fas fa-bolt" style="color: #6366f1;"></i> Quick Note (Zen)';
   }
 
-  if (chrome.storage) {
+  if (typeof chrome !== "undefined" && chrome.storage) {
     // Load Dark Mode Preference
     chrome.storage.local.get(["darkMode", "draftNote"], function(res) {
       if (res.darkMode) {
@@ -55,13 +57,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     chrome.storage.sync.get("notes", function (result) {
       if (result.notes) {
-        // reverse to show newest first if we use push, but here we'll use unshift directly on save. 
-        // older version used push but appended, wait original appended so oldest was at bottom OR reversed? Original appended which means oldest at top! Let's just render them. 
-        // User is used to oldest at top or newest at top?
-        // Original: notes.forEach((note) => displayNote(note)); notesList.appendChild(noteDiv). Oldest first. Let's keep existing order.
-        allNotes = JSON.parse(result.notes);
+        allNotes = parseStoredNotes(result.notes);
         countof = allNotes.length;
         renderNotes(allNotes);
+        openSelectedNoteFromUrl();
         updateBadge();
       }
     });
@@ -126,8 +125,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function renderNotes(notesToRender) {
       notesList.innerHTML = "";
-      // Keep original order: newest at bottom, oldest at top. Or perhaps newest at top is better minimalist note behavior. 
-      // Changed to reverse() for rendering so newest is at top without destroying storage order.
       [...notesToRender].reverse().forEach(note => displayNote(note));
     }
 
@@ -180,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
         viewFullButton.classList.add("copy-button");
         viewFullButton.innerHTML = '<i class="fas fa-expand"></i> View Full';
         viewFullButton.addEventListener("click", function () {
-          const extensionUrl = chrome.runtime.getURL(`popup.html?zen=true&note=${note.id}`);
+          const extensionUrl = chrome.runtime.getURL(`popup.html?zen=true&note=${encodeURIComponent(note.id)}`);
           chrome.tabs.create({ url: extensionUrl });
         });
         buttonGroup.appendChild(viewFullButton);
@@ -234,8 +231,28 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
+    function parseStoredNotes(rawNotes) {
+      try {
+        const parsed = JSON.parse(rawNotes);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        console.error("Unable to parse saved notes.", error);
+        return [];
+      }
+    }
+
+    function openSelectedNoteFromUrl() {
+      if (!isZenMode || didOpenSelectedNote || selectedNoteId === null || !Number.isFinite(selectedNoteId)) return;
+
+      const selectedNote = allNotes.find(note => note.id === selectedNoteId);
+      if (selectedNote) {
+        didOpenSelectedNote = true;
+        openEditModal(selectedNote.id, selectedNote.text);
+      }
+    }
+
     // Markdown Parser
-    function parseMarkdown(text, noteId) {
+    function parseMarkdown(text) {
       let html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       
       const lines = html.split('\n');
@@ -292,16 +309,49 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function parseInlineMarkdown(text) {
+      const linkPlaceholders = [];
       // Bold
       text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       // Italic
       text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
       // Links
-      text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+      text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function(_, label, url) {
+        const safeUrl = sanitizeUrl(url);
+        if (!safeUrl) return label;
+        const token = `%%LINK_${linkPlaceholders.length}%%`;
+        linkPlaceholders.push(`<a href="${escapeAttribute(safeUrl)}" target="_blank" rel="noopener noreferrer">${label}</a>`);
+        return token;
+      });
       // Standalone URLs (rudimentary, ignoring ones inside links)
-      text = text.replace(/(^|[^"'])(https?:\/\/[^\s<]+)/g, '$1<a href="$2" target="_blank">$2</a>');
+      text = text.replace(/(^|[^"'=])(https?:\/\/[^\s<"']+)/g, function(_, prefix, url) {
+        const safeUrl = sanitizeUrl(url);
+        if (!safeUrl) return `${prefix}${url}`;
+        return `${prefix}<a href="${escapeAttribute(safeUrl)}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+      });
+      linkPlaceholders.forEach((linkHtml, index) => {
+        text = text.replace(`%%LINK_${index}%%`, linkHtml);
+      });
       
       return text;
+    }
+
+    function sanitizeUrl(url) {
+      const trimmedUrl = url.trim();
+      try {
+        const parsedUrl = new URL(trimmedUrl);
+        return ["http:", "https:", "mailto:"].includes(parsedUrl.protocol) ? parsedUrl.href : "";
+      } catch {
+        return "";
+      }
+    }
+
+    function escapeAttribute(value) {
+      return value
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
     }
 
     function showSuccess(message = "Notes Copied Successfully") {
