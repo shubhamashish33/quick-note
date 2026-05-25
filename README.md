@@ -10,13 +10,18 @@ The Quick Notes Chrome Extension allows you to add and remove quick notes right 
 
 
 
-## ✨ What's New in Version 2.0
+## ✨ What's New in Version 2.1
 
 * **Cloud Syncing:** Notes are now saved using Chrome's `storage.sync` API. Your notes will automatically sync across all your devices logged into the same Chrome profile!
 * **Capture Current Page:** Click the new "Add Page" button to instantly paste your current tab's URL into your notes. Perfect for research!
+* **Save Selected Text:** Highlight text on any webpage, right-click, and choose "Save to Quick Note" to capture it instantly.
+* **Pinned Notes:** Pin important notes so they stay at the top of your list.
+* **Inline Editing:** Edit saved notes directly from the popup or in Zen Mode.
+* **Undo Delete:** Deleted a note by mistake? Use the Undo action in the toast message to restore it.
+* **Timestamps:** Notes now show created or updated timestamps for easier tracking.
 * **Global Keyboard Shortcut:** Press `Alt + N` (or `Option + N` on Mac) from anywhere in your browser to instantly pop open your Quick Notes.
 * **Modern UI:** A completely redesigned, premium interface featuring smooth modern styling, glass-like UI, soft shadows, and proper multi-line input support. 
-* **Quality of Life:** The badge counter has been simplified to a clean dot indicator, and you can now quickly press `Enter` to save, or `Shift + Enter` for a new line.
+* **Quality of Life:** Zen Mode now has a proper close action, the badge counter uses a clean dot indicator, and you can quickly press `Enter` to save or `Shift + Enter` for a new line.
 
 ## Installation
 
@@ -64,12 +69,19 @@ Just pin it to your toolbar by going into chrome extension settings.
 - Press `Enter` or click the "Save Note" button to add it. To make a new line, press `Shift + Enter`.
 - *Pro Tip:* Click "Add Page" to automatically extract the URL from your active tab!
 
-3. **Style your note:**
-- Click on [B], [I], [U] inside the toolbar to add formatting to your text before saving.
+3. **Save selected webpage text:**
+- Highlight text on a webpage.
+- Right-click the selection.
+- Choose "Save to Quick Note".
 
 4. **Manage notes:**
+- **Pin:** Keep important notes at the top of the list.
+- **Edit:** Update a saved note directly from the popup or Zen Mode.
 - **Copy:** Easily copy a note to your clipboard by hitting the "Copy" button.
 - **Delete:** Click the red cross (✕) or trash icon next to any note to remove it.
+- **Undo Delete:** Use the Undo action in the toast message to restore the last deleted note.
+- **Search:** Filter saved notes instantly from the search box.
+- **Export:** Download all saved notes as a `.txt` file.
 
 ## Uninstalling the Extension
 

@@ -274,6 +274,10 @@ textarea::placeholder {
   word-break: break-word; /* Allows long links to break */
 }
 
+.note.pinned {
+  border-color: rgba(99, 102, 241, 0.45);
+}
+
 .note:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
@@ -292,6 +296,12 @@ textarea::placeholder {
 .note-content a {
   color: var(--primary);
   text-decoration: none;
+}
+
+.note-meta {
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.3;
 }
 
 /* Markdown typography */
@@ -336,6 +346,23 @@ textarea::placeholder {
   gap: 8px;
   border-top: 1px dashed var(--border);
   padding-top: 12px;
+}
+
+.note-icon-action {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.note-icon-action:hover,
+.note-icon-action.active {
+  color: var(--primary);
+  background-color: var(--secondary);
 }
 
 .copy-button {
@@ -392,6 +419,24 @@ textarea::placeholder {
 
 .success-message i {
   margin-right: 6px;
+}
+
+.toast-action {
+  display: none;
+  align-items: center;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: 10px;
+  padding: 4px 10px;
+}
+
+.toast-action:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 @keyframes slideDown {

@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const saveButton = document.getElementById("saveButton");
   const notesList = document.getElementById("notesList");
   const successContainer = document.getElementById("success-message");
+  const successAction = document.getElementById("success-action");
   const capturePageButton = document.getElementById("capturePageButton");
 
   const darkModeToggle = document.getElementById("darkModeToggle");
@@ -22,6 +23,9 @@ document.addEventListener("DOMContentLoaded", function () {
   let allNotes = []; // To keep track for search filtering
   let currentEditNoteId = null;
   let didOpenSelectedNote = false;
+  let deletedNoteSnapshot = null;
+  let undoTimer = null;
+  let successTimer = null;
 
   // Check Zen Mode
   const urlParams = new URLSearchParams(window.location.search);
@@ -64,13 +68,18 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     chrome.storage.sync.get("notes", function (result) {
-      if (result.notes) {
-        allNotes = parseStoredNotes(result.notes);
-        countof = allNotes.length;
-        renderNotes(allNotes);
-        openSelectedNoteFromUrl();
-        updateBadge();
-      }
+      allNotes = parseStoredNotes(result.notes);
+      renderNotes(allNotes);
+      openSelectedNoteFromUrl();
+      updateBadge();
+    });
+
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+      if (areaName !== "sync" || !changes.notes) return;
+
+      allNotes = parseStoredNotes(changes.notes.newValue);
+      renderNotes(filterNotes(searchInput.value));
+      updateBadge();
     });
 
     saveButton.addEventListener("click", addNote);
@@ -109,19 +118,23 @@ document.addEventListener("DOMContentLoaded", function () {
     function addNote() {
       const noteText = noteInput.value.trim();
       if (noteText !== "") {
-        const newNote = { text: noteText, id: Date.now() };
+        const now = new Date().toISOString();
+        const newNote = {
+          text: noteText,
+          id: Date.now(),
+          createdAt: now,
+          updatedAt: now,
+          pinned: false
+        };
         allNotes.push(newNote); // Keep original append style
         
-        chrome.storage.sync.set(
-          { notes: JSON.stringify(allNotes) },
-          function () {
-            renderNotes(allNotes);
-            updateBadge();
-            // Clear draft
-            noteInput.value = "";
-            saveDraft();
-          }
-        );
+        saveNotes(() => {
+          renderNotes(filterNotes(searchInput.value));
+          updateBadge();
+          noteInput.value = "";
+          saveDraft();
+          showSuccess("Note Saved");
+        });
       }
     }
 
@@ -133,12 +146,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function renderNotes(notesToRender) {
       notesList.innerHTML = "";
-      [...notesToRender].reverse().forEach(note => displayNote(note));
+      sortNotesForDisplay(notesToRender).forEach(note => displayNote(note));
     }
 
     function displayNote(note) {
       const noteDiv = document.createElement("div");
       noteDiv.classList.add("note");
+      if (note.pinned) noteDiv.classList.add("pinned");
       noteDiv.dataset.id = note.id;
 
       const noteTextDiv = document.createElement("div");
@@ -158,16 +172,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
       noteDiv.appendChild(noteTextDiv);
 
+      const metaDiv = document.createElement("div");
+      metaDiv.classList.add("note-meta");
+      metaDiv.textContent = getNoteTimestamp(note);
+      noteDiv.appendChild(metaDiv);
+
       const buttonGroup = document.createElement("div");
       buttonGroup.classList.add("note-btn-group");
+
+      const pinButton = document.createElement("button");
+      pinButton.classList.add("note-icon-action");
+      if (note.pinned) pinButton.classList.add("active");
+      pinButton.title = note.pinned ? "Unpin note" : "Pin note";
+      pinButton.setAttribute("aria-label", pinButton.title);
+      pinButton.innerHTML = '<i class="fas fa-thumbtack"></i>';
+      pinButton.addEventListener("click", function () {
+        togglePinned(note.id);
+      });
 
       const removeIcon = document.createElement("i");
       removeIcon.classList.add("fas", "fa-times", "remove-icon");
       removeIcon.title = "Delete note";
       removeIcon.setAttribute("aria-label", "Delete note");
       removeIcon.setAttribute("role", "button");
+      removeIcon.tabIndex = 0;
       removeIcon.addEventListener("click", function () {
         removeNoteFromStorage(note.id);
+      });
+      removeIcon.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          removeNoteFromStorage(note.id);
+        }
       });
 
       const copyButton = document.createElement("button");
@@ -179,7 +215,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       });
 
+      const editButton = document.createElement("button");
+      editButton.classList.add("copy-button");
+      editButton.innerHTML = '<i class="fas fa-pen"></i> Edit';
+      editButton.addEventListener("click", function () {
+        openEditModal(note.id, note.text);
+      });
+
+      buttonGroup.appendChild(pinButton);
       buttonGroup.appendChild(removeIcon);
+      buttonGroup.appendChild(editButton);
       buttonGroup.appendChild(copyButton);
 
       // Add View Full button only in regular mode (not zen)
@@ -192,18 +237,6 @@ document.addEventListener("DOMContentLoaded", function () {
           chrome.tabs.create({ url: extensionUrl });
         });
         buttonGroup.appendChild(viewFullButton);
-      }
-
-      // Add edit button only in zen mode
-      if (isZenMode) {
-        const editButton = document.createElement("button");
-        editButton.classList.add("copy-button");
-        editButton.innerHTML = 'View/Edit';
-        editButton.style.marginRight = "auto";
-        editButton.addEventListener("click", function () {
-          openEditModal(note.id, note.text);
-        });
-        buttonGroup.insertBefore(editButton, buttonGroup.firstChild);
       }
 
       noteDiv.appendChild(buttonGroup);
@@ -228,28 +261,113 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         
         allNotes[noteIndex].text = texts.join('\n');
-        chrome.storage.sync.set({ notes: JSON.stringify(allNotes) }, () => {
-          renderNotes(allNotes); // re-render to reflect new state
+        allNotes[noteIndex].updatedAt = new Date().toISOString();
+        saveNotes(() => {
+          renderNotes(filterNotes(searchInput.value));
         });
       }
     }
 
     function removeNoteFromStorage(noteId) {
-      allNotes = allNotes.filter((note) => note.id !== noteId);
-      chrome.storage.sync.set({ notes: JSON.stringify(allNotes) }, () => {
-          renderNotes(allNotes);
-          updateBadge();
+      const noteIndex = allNotes.findIndex((note) => note.id === noteId);
+      if (noteIndex === -1) return;
+
+      deletedNoteSnapshot = {
+        note: allNotes[noteIndex],
+        index: noteIndex
+      };
+      allNotes.splice(noteIndex, 1);
+
+      saveNotes(() => {
+        renderNotes(filterNotes(searchInput.value));
+        updateBadge();
+        showUndoDelete();
       });
     }
 
+    function undoDelete() {
+      if (!deletedNoteSnapshot) return;
+
+      allNotes.splice(deletedNoteSnapshot.index, 0, deletedNoteSnapshot.note);
+      deletedNoteSnapshot = null;
+      clearTimeout(undoTimer);
+
+      saveNotes(() => {
+        renderNotes(filterNotes(searchInput.value));
+        updateBadge();
+        showSuccess("Delete Undone");
+      });
+    }
+
+    function togglePinned(noteId) {
+      const note = allNotes.find((item) => item.id === noteId);
+      if (!note) return;
+
+      note.pinned = !note.pinned;
+      note.updatedAt = new Date().toISOString();
+      saveNotes(() => {
+        renderNotes(filterNotes(searchInput.value));
+        showSuccess(note.pinned ? "Note Pinned" : "Note Unpinned");
+      });
+    }
+
+    function saveNotes(callback) {
+      chrome.storage.sync.set({ notes: JSON.stringify(allNotes) }, callback);
+    }
+
     function parseStoredNotes(rawNotes) {
+      if (!rawNotes) return [];
+
       try {
         const parsed = JSON.parse(rawNotes);
-        return Array.isArray(parsed) ? parsed : [];
+        return Array.isArray(parsed) ? parsed.map(normalizeNote) : [];
       } catch (error) {
         console.error("Unable to parse saved notes.", error);
         return [];
       }
+    }
+
+    function normalizeNote(note) {
+      const now = new Date().toISOString();
+      const id = Number.isFinite(Number(note?.id)) ? Number(note.id) : Date.now();
+
+      return {
+        id,
+        text: typeof note?.text === "string" ? note.text : "",
+        createdAt: note?.createdAt || now,
+        updatedAt: note?.updatedAt || note?.createdAt || now,
+        pinned: Boolean(note?.pinned)
+      };
+    }
+
+    function sortNotesForDisplay(notes) {
+      return [...notes].sort((a, b) => {
+        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+        return getNoteTime(b) - getNoteTime(a);
+      });
+    }
+
+    function filterNotes(term) {
+      const normalizedTerm = term.trim().toLowerCase();
+      if (!normalizedTerm) return allNotes;
+      return allNotes.filter(n => n.text.toLowerCase().includes(normalizedTerm));
+    }
+
+    function getNoteTime(note) {
+      return new Date(note.updatedAt || note.createdAt || note.id).getTime() || 0;
+    }
+
+    function getNoteTimestamp(note) {
+      const date = new Date(note.updatedAt || note.createdAt || note.id);
+      if (Number.isNaN(date.getTime())) return "";
+
+      const label = note.updatedAt && note.updatedAt !== note.createdAt ? "Updated" : "Created";
+      return `${note.pinned ? "Pinned • " : ""}${label} ${date.toLocaleString([], {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      })}`;
     }
 
     function openSelectedNoteFromUrl() {
@@ -376,12 +494,26 @@ document.addEventListener("DOMContentLoaded", function () {
         .replace(/>/g, "&gt;");
     }
 
-    function showSuccess(message = "Notes Copied Successfully") {
+    function showSuccess(message = "Notes Copied Successfully", actionLabel = "", actionHandler = null, duration = 2000) {
+      clearTimeout(successTimer);
       document.getElementById("success-text").innerText = message;
+      successAction.style.display = actionLabel ? "inline-flex" : "none";
+      successAction.innerText = actionLabel;
+      successAction.onclick = actionHandler;
       successContainer.style.display = 'block';
-      setTimeout(() => {
+      successTimer = setTimeout(() => {
         successContainer.style.display = 'none';
-      }, 2000);
+        successAction.style.display = "none";
+        successAction.onclick = null;
+      }, duration);
+    }
+
+    function showUndoDelete() {
+      showSuccess("Note Deleted", "Undo", undoDelete, 5000);
+      clearTimeout(undoTimer);
+      undoTimer = setTimeout(() => {
+        deletedNoteSnapshot = null;
+      }, 5000);
     }
 
     function openEditModal(noteId, noteText) {
@@ -405,10 +537,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const noteIndex = allNotes.findIndex(n => n.id === currentEditNoteId);
       if (noteIndex > -1) {
         allNotes[noteIndex].text = editedText;
-        chrome.storage.sync.set({ notes: JSON.stringify(allNotes) }, () => {
-          renderNotes(allNotes);
+        allNotes[noteIndex].updatedAt = new Date().toISOString();
+        saveNotes(() => {
+          renderNotes(filterNotes(searchInput.value));
           closeEditModalHandler();
-          showSuccess("Notes Updated Successfully");
+          showSuccess("Note Updated");
         });
       }
     }
@@ -450,9 +583,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Search
     searchInput.addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      const filtered = allNotes.filter(n => n.text.toLowerCase().includes(term));
-      renderNotes(filtered);
+      renderNotes(filterNotes(e.target.value));
     });
 
   } else {
