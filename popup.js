@@ -30,6 +30,9 @@ document.addEventListener("DOMContentLoaded", function () {
   if (isZenMode) {
     document.body.classList.add('zen-mode');
     document.querySelector('header h1').innerHTML = '<i class="fas fa-bolt" style="color: #6366f1;"></i> Quick Note (Zen)';
+    zenModeButton.title = "Close Zen Mode";
+    zenModeButton.setAttribute("aria-label", "Close Zen Mode");
+    zenModeButton.innerHTML = '<i class="fas fa-times"></i>';
   }
 
   if (typeof chrome !== "undefined" && chrome.storage) {
@@ -51,6 +54,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Zen Mode Toggle
     zenModeButton.addEventListener("click", () => {
+      if (isZenMode) {
+        closeZenMode();
+        return;
+      }
+
       const extensionUrl = chrome.runtime.getURL("popup.html?zen=true");
       chrome.tabs.create({ url: extensionUrl });
     });
@@ -155,6 +163,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const removeIcon = document.createElement("i");
       removeIcon.classList.add("fas", "fa-times", "remove-icon");
+      removeIcon.title = "Delete note";
+      removeIcon.setAttribute("aria-label", "Delete note");
+      removeIcon.setAttribute("role", "button");
       removeIcon.addEventListener("click", function () {
         removeNoteFromStorage(note.id);
       });
@@ -249,6 +260,17 @@ document.addEventListener("DOMContentLoaded", function () {
         didOpenSelectedNote = true;
         openEditModal(selectedNote.id, selectedNote.text);
       }
+    }
+
+    function closeZenMode() {
+      chrome.tabs.getCurrent((tab) => {
+        if (tab && tab.id) {
+          chrome.tabs.remove(tab.id);
+          return;
+        }
+
+        window.close();
+      });
     }
 
     // Markdown Parser

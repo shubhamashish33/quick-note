@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
 :root {
   --primary: #6366f1;
   --primary-hover: #4f46e5;
@@ -32,28 +34,9 @@ body.dark-mode {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Outfit', sans-serif;
 }
 
-.fas,
-.fab {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-style: normal;
-  line-height: 1;
-}
-
-.fa-check-circle::before { content: "OK"; font-size: 10px; }
-.fa-bolt::before { content: "!"; }
-.fa-moon::before { content: "D"; }
-.fa-expand::before { content: "[]"; font-size: 11px; }
-.fa-save::before { content: "S"; }
-.fa-paperclip::before { content: "@"; }
-.fa-copy::before { content: "C"; }
-.fa-download::before { content: "DL"; font-size: 10px; }
-.fa-search::before { content: "?"; }
-.fa-times::before { content: "x"; }
 
 body {
   width: 400px;
@@ -515,7 +498,7 @@ textarea::placeholder {
   background: var(--bg);
   min-height: 300px;
   resize: vertical;
-  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Outfit', sans-serif;
   outline: none;
 }
 
@@ -546,7 +529,7 @@ textarea::placeholder {
   background: var(--bg-alt);
   min-height: 200px;
   resize: vertical;
-  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Outfit', sans-serif;
   outline: none;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
